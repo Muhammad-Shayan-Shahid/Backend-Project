@@ -3,12 +3,13 @@ dotenv.config();
 
 const { default: app } = await import('./src/app.js')
 const { default: connectToDb } = await import('./src/config/database.js')
-const {testAI } = await import('./src/services/ai.service.js')
+const { initSocket } = await import('./src/sockets/server.socket.js');
+import http from 'http';
 
-testAI()
-
+const server = http.createServer(app);
+initSocket(server);
 connectToDb()
 
-app.listen(3000 , ()=>{
+server.listen(3000 , ()=>{
     console.log("Server connected succesfully...")
 })

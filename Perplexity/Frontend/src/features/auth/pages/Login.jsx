@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../hooks/useAuth';
+import {useSelector} from 'react-redux';
 import './Login.css';
 
 export default function Login() {
@@ -7,7 +10,13 @@ export default function Login() {
     password: '',
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+  const loading = useSelector((state) => state.auth.loading);
+
+
+  const { handleLogin } = useAuth();
+
+  const navigate = useNavigate();
 
   // Two-way binding - handle input change
   const handleChange = (e) => {
@@ -21,23 +30,19 @@ export default function Login() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      // API call here
-      console.log('Login attempt with:', formData);
-      // Replace with your actual API endpoint
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    const payLoad = {
+      email: formData.email,
+      password: formData.password,
+    };
+
+    await handleLogin(payLoad);
+    navigate('/');
   };
+
+  if(!loading && user) {
+    navigate('/');
+  }
 
   return (
     <div className="login-container">
@@ -102,10 +107,10 @@ export default function Login() {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={loading}
             className="login-button"
           >
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
