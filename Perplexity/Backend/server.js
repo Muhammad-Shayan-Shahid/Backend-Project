@@ -8,7 +8,7 @@ import http from 'http';
 
 const server = http.createServer(app);
 initSocket(server);
-connectToDb()
+await connectToDb()
 
 server.listen(3000 , ()=>{
     console.log("Server connected succesfully...")
