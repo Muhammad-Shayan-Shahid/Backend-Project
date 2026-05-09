@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 export const registerUser = async (req, res) => {
-    const {username , email , password} = req.body;
+    const {username , email , password , targetRole} = req.body;
 
     const isUserExist = await User.findOne({
         $or : [
@@ -23,7 +23,8 @@ export const registerUser = async (req, res) => {
     const user = await User.create({
         username , 
         email , 
-        password : hash
+        password : hash ,
+        targetRole
     })
 
     const token = jwt.sign(
